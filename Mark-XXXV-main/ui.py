@@ -16,27 +16,45 @@ BASE_DIR   = get_base_dir()
 CONFIG_DIR = BASE_DIR / "config"
 API_FILE   = CONFIG_DIR / "api_keys.json"
 
-SYSTEM_NAME = "J.A.R.V.I.S"
-MODEL_BADGE = "MARK XXXV"
+SYSTEM_NAME    = "FURQAN"
+SYSTEM_TAGLINE = "Professional Personal AI Assistant"
+MODEL_BADGE    = "FURQAN CORE"
+FOOTER_TEXT    = "Furqan Industries  ·  SECURED  ·  FURQAN CORE"
 
-C_BG     = "#000000"
-C_PRI    = "#00d4ff"
-C_MID    = "#007a99"
-C_DIM    = "#003344"
-C_DIMMER = "#001520"
-C_ACC    = "#ff6600"
-C_ACC2   = "#ffcc00"
-C_TEXT   = "#8ffcff"
-C_PANEL  = "#010c10"
-C_GREEN  = "#00ff88"
-C_RED    = "#ff3333"
-C_MUTED  = "#ff3366"
+C_BG       = "#0b0f14"
+C_PRI      = "#4cc9f0"
+C_MID      = "#2a9dcd"
+C_DIM      = "#223045"
+C_DIMMER   = "#111720"
+C_ACC      = "#f72585"
+C_ACC2     = "#f6c453"
+C_TEXT     = "#e6f4ff"
+C_PANEL    = "#111923"
+C_PANEL_L  = "#151f2b"
+C_BORDER   = "#1e2a38"
+C_GREEN    = "#2bd576"
+C_RED      = "#ff5c8a"
+C_MUTED    = "#ff4d6d"
+C_INPUT_BG = "#0f1822"
+
+PRIMARY_RGB = (76, 201, 240)
+MUTED_RGB   = (255, 77, 109)
+
+FONT_TITLE    = ("Segoe UI", 18, "bold")
+FONT_SUBTITLE = ("Segoe UI", 9)
+FONT_BADGE    = ("Segoe UI", 9, "bold")
+FONT_CLOCK    = ("Segoe UI", 14, "bold")
+FONT_STATUS   = ("Segoe UI", 10, "bold")
+FONT_ORB      = ("Segoe UI", 14, "bold")
+FONT_LOG      = ("Consolas", 10)
+FONT_BODY     = ("Segoe UI", 10)
+FONT_BUTTON   = ("Segoe UI", 9, "bold")
 
 
-class JarvisUI:
+class FurqanUI:
     def __init__(self, face_path, size=None):
         self.root = tk.Tk()
-        self.root.title("J.A.R.V.I.S — MARK XXXV")
+        self.root.title("FURQAN — AI Assistant")
         self.root.resizable(False, False)
 
         sw = self.root.winfo_screenwidth()
@@ -71,7 +89,7 @@ class JarvisUI:
 
         # Dışarıdan set edilebilen durum (main.py çağırır)
         # Değerler: "LISTENING" | "SPEAKING" | "THINKING" | "MUTED" | "ONLINE"
-        self._jarvis_state = "INITIALISING"
+        self._assistant_state = "INITIALISING"
 
         self.typing_queue = deque()
         self.is_typing    = False
@@ -90,19 +108,27 @@ class JarvisUI:
         self.bg.place(x=0, y=0)
 
         # ── Log alanı ────────────────────────────────────────────────────────
-        LW = int(W * 0.72)
-        LH = 110
-        LOG_Y = H - LH - 80   # klavye inputu için yukarı çektik
-        self.log_frame = tk.Frame(self.root, bg=C_PANEL,
-                                  highlightbackground=C_MID,
-                                  highlightthickness=1)
+        LW = int(W * 0.74)
+        LH = 120
+        LOG_Y = H - LH - 92   # klavye inputu için yukarı çektik
+        self.log_frame = tk.Frame(
+            self.root, bg=C_PANEL,
+            highlightbackground=C_BORDER,
+            highlightthickness=1
+        )
         self.log_frame.place(x=(W - LW) // 2, y=LOG_Y, width=LW, height=LH)
-        self.log_text = tk.Text(self.log_frame, fg=C_TEXT, bg=C_PANEL,
-                                insertbackground=C_TEXT, borderwidth=0,
-                                wrap="word", font=("Courier", 10), padx=10, pady=6)
+        self.log_text = tk.Text(
+            self.log_frame,
+            fg=C_TEXT, bg=C_PANEL,
+            insertbackground=C_TEXT,
+            borderwidth=0,
+            wrap="word",
+            font=FONT_LOG,
+            padx=12, pady=8
+        )
         self.log_text.pack(fill="both", expand=True)
         self.log_text.configure(state="disabled")
-        self.log_text.tag_config("you", foreground="#e8e8e8")
+        self.log_text.tag_config("you", foreground="#dfe8f2")
         self.log_text.tag_config("ai",  foreground=C_PRI)
         self.log_text.tag_config("sys", foreground=C_ACC2)
         self.log_text.tag_config("err", foreground=C_RED)
@@ -146,20 +172,20 @@ class JarvisUI:
         c.delete("all")
         if self.muted:
             border = C_MUTED
-            fill   = "#1a0008"
+            fill   = "#1a0b12"
             icon   = "🔇"
             label  = " MUTED"
             fg     = C_MUTED
         else:
-            border = C_MID
-            fill   = C_PANEL
+            border = C_BORDER
+            fill   = C_PANEL_L
             icon   = "🎙"
             label  = " LIVE"
             fg     = C_GREEN
 
         c.create_rectangle(0, 0, 110, 32, outline=border, fill=fill, width=1)
         c.create_text(55, 16, text=f"{icon}{label}",
-                      fill=fg, font=("Courier", 10, "bold"))
+                      fill=fg, font=FONT_BUTTON)
 
     def _toggle_mute(self):
         self.muted = not self.muted
@@ -184,12 +210,12 @@ class JarvisUI:
         self._input_entry = tk.Entry(
             self.root,
             textvariable=self._input_var,
-            fg=C_TEXT, bg="#000d12",
+            fg=C_TEXT, bg=C_INPUT_BG,
             insertbackground=C_TEXT,
             borderwidth=0,
-            font=("Courier", 10),
+            font=FONT_BODY,
             highlightthickness=1,
-            highlightbackground=C_DIM,
+            highlightbackground=C_BORDER,
             highlightcolor=C_PRI,
         )
         self._input_entry.place(x=x0, y=y, width=INP_W, height=28)
@@ -200,12 +226,12 @@ class JarvisUI:
             self.root,
             text="SEND ▸",
             command=self._on_input_submit,
-            fg=C_PRI, bg=C_PANEL,
+            fg=C_PRI, bg=C_PANEL_L,
             activeforeground=C_BG, activebackground=C_PRI,
-            font=("Courier", 9, "bold"),
+            font=FONT_BUTTON,
             borderwidth=0, cursor="hand2",
             highlightthickness=1,
-            highlightbackground=C_MID,
+            highlightbackground=C_BORDER,
         )
         self._send_btn.place(x=x0 + INP_W + 4, y=y, width=BTN_W, height=28)
 
@@ -229,7 +255,7 @@ class JarvisUI:
         main.py'den çağrılır.
         state: LISTENING | SPEAKING | THINKING | MUTED | ONLINE | PROCESSING
         """
-        self._jarvis_state = state
+        self._assistant_state = state
         if state == "MUTED":
             self.status_text = "MUTED"
             self.speaking    = False
@@ -322,8 +348,8 @@ class JarvisUI:
         c.delete("all")
 
         # Arka plan grid
-        for x in range(0, W, 44):
-            for y in range(0, H, 44):
+        for x in range(0, W, 52):
+            for y in range(0, H, 52):
                 c.create_rectangle(x, y, x+1, y+1, fill=C_DIMMER, outline="")
 
         # Halo halkaları
@@ -332,13 +358,11 @@ class JarvisUI:
             ga   = max(0, min(255, int(self.halo_a * 0.09 * frac)))
             # Mute modda kırmızı halo
             if self.muted:
-                gh = f"{ga:02x}"
                 c.create_oval(FCX-r, FCY-r, FCX+r, FCY+r,
-                              outline=f"#{gh}0011", width=2)
+                              outline=self._ac(*MUTED_RGB, ga), width=2)
             else:
-                gh = f"{ga:02x}"
                 c.create_oval(FCX-r, FCY-r, FCX+r, FCY+r,
-                              outline=f"#00{gh}ff", width=2)
+                              outline=self._ac(*PRIMARY_RGB, ga), width=2)
 
         # Pulse dalgaları
         for pr in self.pulse_r:
@@ -346,10 +370,10 @@ class JarvisUI:
             r  = int(pr)
             if self.muted:
                 c.create_oval(FCX-r, FCY-r, FCX+r, FCY+r,
-                              outline=self._ac(255, 30, 80, pa // 3), width=2)
+                              outline=self._ac(*MUTED_RGB, pa // 2), width=2)
             else:
                 c.create_oval(FCX-r, FCY-r, FCX+r, FCY+r,
-                              outline=self._ac(0, 212, 255, pa), width=2)
+                              outline=self._ac(*PRIMARY_RGB, pa), width=2)
 
         # Dönen halkalar
         for idx, (r_frac, w_ring, arc_l, gap) in enumerate([
@@ -357,7 +381,7 @@ class JarvisUI:
             ring_r = int(FW * r_frac)
             base_a = self.rings_spin[idx]
             a_val  = max(0, min(255, int(self.halo_a * (1.0 - idx * 0.18))))
-            col    = self._ac(255, 30, 80, a_val) if self.muted else self._ac(0, 212, 255, a_val)
+            col    = self._ac(*MUTED_RGB, a_val) if self.muted else self._ac(*PRIMARY_RGB, a_val)
             for s in range(360 // (arc_l + gap)):
                 start = (base_a + s * (arc_l + gap)) % 360
                 c.create_arc(FCX-ring_r, FCY-ring_r, FCX+ring_r, FCY+ring_r,
@@ -368,18 +392,18 @@ class JarvisUI:
         sr      = int(FW * 0.49)
         scan_a  = min(255, int(self.halo_a * 1.4))
         arc_ext = 70 if self.speaking else 42
-        scan_col = self._ac(255, 30, 80, scan_a) if self.muted else self._ac(0, 212, 255, scan_a)
+        scan_col = self._ac(*MUTED_RGB, scan_a) if self.muted else self._ac(*PRIMARY_RGB, scan_a)
         c.create_arc(FCX-sr, FCY-sr, FCX+sr, FCY+sr,
                      start=self.scan_angle, extent=arc_ext,
                      outline=scan_col, width=3, style="arc")
         c.create_arc(FCX-sr, FCY-sr, FCX+sr, FCY+sr,
                      start=self.scan2_angle, extent=arc_ext,
-                     outline=self._ac(255, 100, 0, scan_a // 2), width=2, style="arc")
+                     outline=self._ac(246, 196, 83, scan_a // 2), width=2, style="arc")
 
         # Derecelendirme işaretleri
         t_out = int(FW * 0.495)
         t_in  = int(FW * 0.472)
-        a_mk  = self._ac(0, 212, 255, 155)
+        a_mk  = self._ac(*PRIMARY_RGB, 155)
         for deg in range(0, 360, 10):
             rad = math.radians(deg)
             inn = t_in if deg % 30 == 0 else t_in + 5
@@ -390,7 +414,7 @@ class JarvisUI:
         # Crosshair
         ch_r = int(FW * 0.50)
         gap  = int(FW * 0.15)
-        ch_a = self._ac(0, 212, 255, int(self.halo_a * 0.55))
+        ch_a = self._ac(*PRIMARY_RGB, int(self.halo_a * 0.55))
         for x1, y1, x2, y2 in [
                 (FCX - ch_r, FCY, FCX - gap, FCY), (FCX + gap, FCY, FCX + ch_r, FCY),
                 (FCX, FCY - ch_r, FCX, FCY - gap), (FCX, FCY + gap, FCX, FCY + ch_r)]:
@@ -425,7 +449,7 @@ class JarvisUI:
             c.create_image(FCX, FCY, image=self._face_scale_cache[1])
         else:
             orb_r = int(FW * 0.27 * self.scale)
-            orb_color = (255, 30, 80) if self.muted else (0, 65, 120)
+            orb_color = MUTED_RGB if self.muted else (20, 70, 110)
             for i in range(7, 0, -1):
                 r2   = int(orb_r * i / 7)
                 frac = i / 7
@@ -436,21 +460,21 @@ class JarvisUI:
                                             int(orb_color[2]*frac), ga),
                               outline="")
             c.create_text(FCX, FCY, text=SYSTEM_NAME,
-                          fill=self._ac(0, 212, 255, min(255, int(self.halo_a * 2))),
-                          font=("Courier", 14, "bold"))
+                          fill=self._ac(*PRIMARY_RGB, min(255, int(self.halo_a * 2))),
+                          font=FONT_ORB)
 
         # ── Header ────────────────────────────────────────────────────────────
         HDR = 62
-        c.create_rectangle(0, 0, W, HDR, fill="#00080d", outline="")
-        c.create_line(0, HDR, W, HDR, fill=C_MID, width=1)
+        c.create_rectangle(0, 0, W, HDR, fill=C_PANEL_L, outline="")
+        c.create_line(0, HDR, W, HDR, fill=C_BORDER, width=1)
         c.create_text(W // 2, 22, text=SYSTEM_NAME,
-                      fill=C_PRI, font=("Courier", 18, "bold"))
-        c.create_text(W // 2, 44, text="Just A Rather Very Intelligent System",
-                      fill=C_MID, font=("Courier", 9))
+                      fill=C_PRI, font=FONT_TITLE)
+        c.create_text(W // 2, 44, text=SYSTEM_TAGLINE,
+                      fill=C_DIM, font=FONT_SUBTITLE)
         c.create_text(16, 31, text=MODEL_BADGE,
-                      fill=C_DIM, font=("Courier", 9), anchor="w")
+                      fill=C_DIM, font=FONT_BADGE, anchor="w")
         c.create_text(W - 16, 31, text=time.strftime("%H:%M:%S"),
-                      fill=C_PRI, font=("Courier", 14, "bold"), anchor="e")
+                      fill=C_PRI, font=FONT_CLOCK, anchor="e")
 
         # ── Durum göstergesi ──────────────────────────────────────────────────
         sy = FCY + FW // 2 + 45
@@ -461,15 +485,15 @@ class JarvisUI:
         elif self.speaking:
             stat = "● SPEAKING"
             sc   = C_ACC
-        elif self._jarvis_state == "THINKING":
+        elif self._assistant_state == "THINKING":
             sym  = "◈" if self.status_blink else "◇"
             stat = f"{sym} THINKING"
             sc   = C_ACC2
-        elif self._jarvis_state == "PROCESSING":
+        elif self._assistant_state == "PROCESSING":
             sym  = "▷" if self.status_blink else "▶"
             stat = f"{sym} PROCESSING"
             sc   = C_ACC2
-        elif self._jarvis_state == "LISTENING":
+        elif self._assistant_state == "LISTENING":
             sym  = "●" if self.status_blink else "○"
             stat = f"{sym} LISTENING"
             sc   = C_GREEN
@@ -478,8 +502,19 @@ class JarvisUI:
             stat = f"{sym} {self.status_text}"
             sc   = C_PRI
 
+        pill_w = 240
+        pill_h = 26
+        c.create_rectangle(
+            W // 2 - pill_w // 2,
+            sy - pill_h // 2,
+            W // 2 + pill_w // 2,
+            sy + pill_h // 2,
+            fill=C_PANEL_L,
+            outline=C_BORDER,
+            width=1,
+        )
         c.create_text(W // 2, sy, text=stat,
-                      fill=sc, font=("Courier", 11, "bold"))
+                      fill=sc, font=FONT_STATUS)
 
         # ── Ses dalgası ───────────────────────────────────────────────────────
         wy = sy + 22
@@ -503,14 +538,14 @@ class JarvisUI:
                                 fill=col, outline="")
 
         # ── Footer ────────────────────────────────────────────────────────────
-        c.create_rectangle(0, H - 28, W, H, fill="#00080d", outline="")
-        c.create_line(0, H - 28, W, H - 28, fill=C_DIM, width=1)
+        c.create_rectangle(0, H - 28, W, H, fill=C_PANEL_L, outline="")
+        c.create_line(0, H - 28, W, H - 28, fill=C_BORDER, width=1)
 
         # F4 ipucu sağ tarafta
-        c.create_text(W - 16, H - 14, fill=C_DIM, font=("Courier", 8),
+        c.create_text(W - 16, H - 14, fill=C_DIM, font=FONT_SUBTITLE,
                       text="[F4] MUTE", anchor="e")
-        c.create_text(W // 2, H - 14, fill=C_DIM, font=("Courier", 8),
-                      text="FatihMakes Industries  ·  CLASSIFIED  ·  MARK XXXV")
+        c.create_text(W // 2, H - 14, fill=C_DIM, font=FONT_SUBTITLE,
+                      text=FOOTER_TEXT)
 
     # ── Log ───────────────────────────────────────────────────────────────────
 
@@ -519,7 +554,7 @@ class JarvisUI:
         tl = text.lower()
         if tl.startswith("you:"):
             self.set_state("PROCESSING")
-        elif tl.startswith("jarvis:") or tl.startswith("ai:"):
+        elif tl.startswith("furqan:") or tl.startswith("ai:"):
             self.set_state("SPEAKING")
         if not self.is_typing:
             self._start_typing()
@@ -535,7 +570,7 @@ class JarvisUI:
         tl   = text.lower()
         if tl.startswith("you:"):
             tag = "you"
-        elif tl.startswith("jarvis:") or tl.startswith("ai:"):
+        elif tl.startswith("furqan:") or tl.startswith("ai:"):
             tag = "ai"
         elif tl.startswith("err:") or "error" in tl or "failed" in tl:
             tag = "err"
@@ -574,29 +609,29 @@ class JarvisUI:
 
     def _show_setup_ui(self):
         self.setup_frame = tk.Frame(
-            self.root, bg="#00080d",
+            self.root, bg=C_PANEL_L,
             highlightbackground=C_PRI, highlightthickness=1
         )
         self.setup_frame.place(relx=0.5, rely=0.5, anchor="center")
 
         tk.Label(self.setup_frame, text="◈  INITIALISATION REQUIRED",
-                 fg=C_PRI, bg="#00080d", font=("Courier", 13, "bold")).pack(pady=(18, 4))
+                 fg=C_PRI, bg=C_PANEL_L, font=("Segoe UI", 13, "bold")).pack(pady=(18, 4))
         tk.Label(self.setup_frame,
-                 text="Enter your Gemini API key to boot J.A.R.V.I.S.",
-                 fg=C_MID, bg="#00080d", font=("Courier", 9)).pack(pady=(0, 10))
+                 text="Enter your Gemini API key to boot FURQAN.",
+                 fg=C_MID, bg=C_PANEL_L, font=FONT_SUBTITLE).pack(pady=(0, 10))
 
         tk.Label(self.setup_frame, text="GEMINI API KEY",
-                 fg=C_DIM, bg="#00080d", font=("Courier", 9)).pack(pady=(8, 2))
+                 fg=C_DIM, bg=C_PANEL_L, font=FONT_SUBTITLE).pack(pady=(8, 2))
         self.gemini_entry = tk.Entry(
-            self.setup_frame, width=52, fg=C_TEXT, bg="#000d12",
-            insertbackground=C_TEXT, borderwidth=0, font=("Courier", 10), show="*"
+            self.setup_frame, width=52, fg=C_TEXT, bg=C_INPUT_BG,
+            insertbackground=C_TEXT, borderwidth=0, font=FONT_BODY, show="*"
         )
         self.gemini_entry.pack(pady=(0, 4))
 
         tk.Button(
             self.setup_frame, text="▸  INITIALISE SYSTEMS",
             command=self._save_api_keys, bg=C_BG, fg=C_PRI,
-            activebackground="#003344", font=("Courier", 10),
+            activebackground=C_MID, font=FONT_BUTTON,
             borderwidth=0, pady=8
         ).pack(pady=14)
 
@@ -610,4 +645,4 @@ class JarvisUI:
         self.setup_frame.destroy()
         self._api_key_ready = True
         self.set_state("LISTENING")
-        self.write_log("SYS: Systems initialised. JARVIS online.")
+        self.write_log("SYS: Systems initialised. FURQAN online.")

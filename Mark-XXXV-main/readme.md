@@ -29,7 +29,7 @@ Designed for speed, autonomy, and real-world usability.
 ## 🆕 What's New in XXXV
 
 * 🎮 Steam & Epic Games integration — install, update, schedule, auto-shutdown
-* 🔇 Mute button (F4 / click) — no more Jarvis picking up side conversations
+* 🔇 Mute button (F4 / click) — no more Furqan picking up side conversations
 * ⌨️ Keyboard input on UI — type commands without speaking
 * 🧠 Smarter memory — saves favorites, projects, relationships, plans automatically
 * 🌐 Incognito browser support
@@ -64,7 +64,7 @@ System ready in minutes.
 Personal and non-commercial use only.
 Licensed under **Creative Commons BY-NC 4.0**.
 
-Engineered by a 17-year-old building a real JARVIS-style assistant.
+Engineered by a 17-year-old building a real FURQAN-style assistant.
 ⭐ Star the repository to support the project.
 ---
 If you have questions, issues, or just want to say hi:
