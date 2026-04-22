@@ -183,18 +183,10 @@ def set_wallpaper_from_web(url: str) -> str:
     try:
         import urllib.request
         suffix = Path(url.split("?")[0]).suffix or ".jpg"
-        tmp_path = None
-        try:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp_file:
-                tmp_path = Path(tmp_file.name)
-            urllib.request.urlretrieve(url, str(tmp_path))
-        except Exception:
-            if tmp_path and tmp_path.exists():
-                try:
-                    tmp_path.unlink()
-                except Exception:
-                    pass
-            raise
+        if suffix.lower() not in [".jpg", ".jpeg", ".png", ".bmp"]:
+            suffix = ".jpg"
+        tmp_path = Path(tempfile.gettempdir()) / f"furqan_wallpaper{suffix}"
+        urllib.request.urlretrieve(url, str(tmp_path))
         result = set_wallpaper(str(tmp_path))
         return result
     except Exception as e:

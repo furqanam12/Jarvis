@@ -29,7 +29,7 @@ Designed for speed, autonomy, and real-world usability.
 ## 🆕 What's New in XXXV
 
 * 🎮 Steam & Epic Games integration — install, update, schedule, auto-shutdown
-* 🔇 Mute button (F4 / click) — no more Furqan picking up side conversations
+* 🔇 Mute button (F4 / click) — no more Furqan picking up side conversations through the mic
 * ⌨️ Keyboard input on UI — type commands without speaking
 * 🧠 Smarter memory — saves favorites, projects, relationships, plans automatically
 * 🌐 Incognito browser support
