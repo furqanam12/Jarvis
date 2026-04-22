@@ -69,11 +69,11 @@ def _load_system_prompt() -> str:
 _last_memory_input = ""
 
 
-def _update_memory_async(user_text: str, jarvis_text: str) -> None:
+def _update_memory_async(user_text: str, furqan_text: str) -> None:
     global _last_memory_input
 
     user_text   = (user_text   or "").strip()
-    jarvis_text = (jarvis_text or "").strip()
+    furqan_text = (furqan_text or "").strip()
 
     if len(user_text) < 5 or user_text == _last_memory_input:
         return
@@ -81,9 +81,9 @@ def _update_memory_async(user_text: str, jarvis_text: str) -> None:
 
     try:
         api_key = _get_api_key()
-        if not should_extract_memory(user_text, jarvis_text, api_key):
+        if not should_extract_memory(user_text, furqan_text, api_key):
             return
-        data = extract_memory(user_text, jarvis_text, api_key)
+        data = extract_memory(user_text, furqan_text, api_key)
         if data:
             update_memory(data)
             print(f"[Memory] ✅ {list(data.keys())}")

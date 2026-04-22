@@ -183,9 +183,10 @@ def set_wallpaper_from_web(url: str) -> str:
     try:
         import urllib.request
         suffix = Path(url.split("?")[0]).suffix or ".jpg"
-        tmp    = Path(tempfile.mktemp(suffix=suffix))
-        urllib.request.urlretrieve(url, str(tmp))
-        result = set_wallpaper(str(tmp))
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp_file:
+            tmp_path = Path(tmp_file.name)
+        urllib.request.urlretrieve(url, str(tmp_path))
+        result = set_wallpaper(str(tmp_path))
         return result
     except Exception as e:
         return f"Could not download wallpaper: {e}"

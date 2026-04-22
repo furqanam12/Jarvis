@@ -114,7 +114,7 @@ def update_memory(memory_update: dict) -> dict:
     return memory
 
 
-def should_extract_memory(user_text: str, jarvis_text: str, api_key: str) -> bool:
+def should_extract_memory(user_text: str, furqan_text: str, api_key: str) -> bool:
     """
     Stage 1: Hızlı YES/NO kontrolü.
     Öncekinden daha geniş kriterler — favori şeyler, projeler, arkadaşlar da dahil.
@@ -125,7 +125,7 @@ def should_extract_memory(user_text: str, jarvis_text: str, api_key: str) -> boo
         model = genai.GenerativeModel("gemini-2.5-flash-lite")
 
     # Her iki tarafı da gönder — Furqan'ın söyledikleri de bilgi içerebilir
-    combined = f"User: {user_text[:300]}\nFurqan: {jarvis_text[:200]}"
+    combined = f"User: {user_text[:300]}\nFurqan: {furqan_text[:200]}"
 
         check = model.generate_content(
             f"Does this conversation contain ANY of the following?\n"
@@ -143,7 +143,7 @@ def should_extract_memory(user_text: str, jarvis_text: str, api_key: str) -> boo
         return False
 
 
-def extract_memory(user_text: str, jarvis_text: str, api_key: str) -> dict:
+def extract_memory(user_text: str, furqan_text: str, api_key: str) -> dict:
     """
     Stage 2: Detaylı çıkarım. Her iki tarafı da analiz eder.
     """
@@ -152,7 +152,7 @@ def extract_memory(user_text: str, jarvis_text: str, api_key: str) -> dict:
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel("gemini-2.5-flash-lite")
 
-    combined = f"User: {user_text[:500]}\nFurqan: {jarvis_text[:300]}"
+    combined = f"User: {user_text[:500]}\nFurqan: {furqan_text[:300]}"
 
         raw = model.generate_content(
             f"Extract ALL memorable personal facts from this conversation. Any language.\n"
