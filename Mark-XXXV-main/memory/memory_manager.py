@@ -1,5 +1,5 @@
 """
-memory_manager.py — MARK XXV Hafıza Sistemi
+memory_manager.py — MARK XXV Memory System
 ============================================
 Düzeltmeler:
   - _MEMORY_EVERY_N_TURNS: 3 → 1 (her turda kontrol)

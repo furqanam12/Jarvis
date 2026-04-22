@@ -185,10 +185,24 @@ def set_wallpaper_from_web(url: str) -> str:
         suffix = Path(url.split("?")[0]).suffix or ".jpg"
         if suffix.lower() not in [".jpg", ".jpeg", ".png", ".bmp"]:
             suffix = ".jpg"
-        tmp_path = Path(tempfile.gettempdir()) / f"furqan_wallpaper{suffix}"
-        urllib.request.urlretrieve(url, str(tmp_path))
-        result = set_wallpaper(str(tmp_path))
-        return result
+        temp_dir = Path(tempfile.gettempdir())
+        tmp_path = None
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix, dir=temp_dir) as tmp_file:
+                tmp_path = Path(tmp_file.name)
+            urllib.request.urlretrieve(url, str(tmp_path))
+            final_path = temp_dir / f"furqan_wallpaper{suffix}"
+            if final_path.exists():
+                final_path.unlink()
+            shutil.move(str(tmp_path), str(final_path))
+            result = set_wallpaper(str(final_path))
+            return result
+        finally:
+            if tmp_path and tmp_path.exists():
+                try:
+                    tmp_path.unlink()
+                except Exception:
+                    pass
     except Exception as e:
         return f"Could not download wallpaper: {e}"
 
